@@ -40,10 +40,15 @@
         --combo-bd: rgba(167, 139, 250, 0.35);
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         background: var(--bg);
         color: var(--tx);
         font-family: "Plus Jakarta Sans", "Hind Siliguri", sans-serif;
+        overflow-x: hidden;
         transition:
           background-color 0.35s ease,
           color 0.35s ease;
@@ -54,19 +59,70 @@
       .serif {
         font-family: "Playfair Display", serif;
       }
+
+      /* Top Scroll Progress Indicator */
+      #scrollProgress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        z-index: 100;
+        background: linear-gradient(90deg, var(--pri), var(--acc), #f59e0b);
+        transition: width 0.12s ease-out;
+        pointer-events: none;
+      }
+
       .card {
         background: var(--card);
         border: 1px solid var(--bd);
         transition:
           background-color 0.35s ease,
           border-color 0.35s ease,
-          transform 0.2s;
+          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
+      .card:hover {
+        box-shadow: 0 14px 30px -12px rgba(27, 67, 50, 0.16);
+      }
+      .dark .card:hover {
+        box-shadow: 0 14px 32px -12px rgba(167, 139, 250, 0.22);
+      }
+
+      /* Combo Banner with subtle ambient shimmer */
       .combo-banner {
+        position: relative;
+        overflow: hidden;
         background: var(--combo-bg);
         border: 1px solid var(--combo-bd);
         transition: background 0.35s ease, border-color 0.35s ease;
       }
+      .combo-banner::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+          115deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.08) 50%,
+          transparent 100%
+        );
+        transform: skewX(-20deg);
+        animation: bannerSweep 7s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes bannerSweep {
+        0%, 55% {
+          left: -120%;
+        }
+        100% {
+          left: 180%;
+        }
+      }
+
       .mu {
         color: var(--mu);
       }
@@ -76,26 +132,53 @@
       .acc {
         color: var(--acc);
       }
+
+      /* Buttons with Shimmer & Micro-Interactions */
       .btn {
+        position: relative;
+        overflow: hidden;
         background: var(--acc);
         color: #fff;
         font-weight: 600;
         border-radius: 999px;
         padding: 0.65rem 1.4rem;
         transition:
-          filter 0.2s,
-          transform 0.1s;
+          filter 0.25s ease,
+          transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.25s ease;
         cursor: pointer;
+      }
+      .btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 65%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.32),
+          transparent
+        );
+        transition: left 0.55s ease;
+        pointer-events: none;
+      }
+      .btn:hover::after {
+        left: 140%;
       }
       .dark .btn {
         color: #111827;
       }
       .btn:hover {
         filter: brightness(1.08);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -6px rgba(217, 119, 6, 0.45);
       }
       .btn:active {
-        transform: scale(0.97);
+        transform: scale(0.96);
       }
+
       .btn2 {
         border: 1.5px solid var(--pri);
         color: var(--pri);
@@ -103,11 +186,22 @@
         border-radius: 999px;
         padding: 0.65rem 1.4rem;
         cursor: pointer;
+        transition:
+          background-color 0.25s ease,
+          color 0.25s ease,
+          transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.25s ease;
       }
       .btn2:hover {
         background: var(--pri);
         color: var(--bg);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px -6px rgba(27, 67, 50, 0.3);
       }
+      .btn2:active {
+        transform: scale(0.96);
+      }
+
       .pill {
         border: 1px solid var(--bd);
         border-radius: 999px;
@@ -116,12 +210,17 @@
         min-height: 36px;
         cursor: pointer;
         transition:
-          background-color 0.2s,
-          color 0.2s,
-          border-color 0.2s;
+          background-color 0.22s ease,
+          color 0.22s ease,
+          border-color 0.22s ease,
+          transform 0.18s ease;
       }
       .pill:hover:not(.on) {
         border-color: var(--pri);
+        transform: translateY(-1px);
+      }
+      .pill:active {
+        transform: scale(0.96);
       }
       .pill.on {
         background: var(--pri);
@@ -129,32 +228,41 @@
         border-color: var(--pri);
         font-weight: 600;
       }
+
       .nav-link {
         position: relative;
         padding: 0.25rem 0.15rem;
-        transition: color 0.2s;
+        transition: color 0.2s ease, transform 0.2s ease;
       }
       .nav-link:hover {
         color: var(--acc);
+        transform: translateY(-1px);
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        bottom: -4px;
+        height: 2.5px;
+        border-radius: 99px;
+        background: var(--acc);
+        transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), right 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        left: 0;
+        right: 0;
       }
       .nav-link.active {
         color: var(--acc);
         font-weight: 700;
       }
-      .nav-link.active::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -4px;
-        height: 2.5px;
-        border-radius: 99px;
-        background: var(--acc);
-      }
       #mnav a.active {
         color: var(--acc);
         font-weight: 700;
       }
+
       .inp {
         width: 100%;
         background: var(--bg);
@@ -162,6 +270,7 @@
         border-radius: 0.6rem;
         padding: 0.6rem 0.8rem;
         color: var(--tx);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
       .inp:focus,
       button:focus-visible,
@@ -170,9 +279,14 @@
         outline: 2px solid var(--acc);
         outline-offset: 2px;
       }
+
       .img svg {
         width: 62%;
         height: 86%;
+        transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .card:hover .img svg {
+        transform: scale(1.08) rotate(-2deg);
       }
       .ico svg {
         width: 72px;
@@ -195,27 +309,55 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
       }
+      .card:hover .img img {
+        transform: scale(1.06);
+      }
+
       .glass {
         backdrop-filter: blur(12px);
         background: color-mix(in srgb, var(--bg) 85%, transparent);
       }
+
+      /* Animated Modals */
       .modal {
         position: fixed;
         inset: 0;
         z-index: 70;
         background: rgba(0, 0, 0, 0.65);
-        display: none;
+        backdrop-filter: blur(4px);
+        display: flex;
         align-items: center;
         justify-content: center;
         padding: 0.75rem;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s ease, visibility 0s 0.28s;
       }
       .modal.open {
-        display: flex;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition: opacity 0.28s ease;
       }
+      .modal > div {
+        transform: scale(0.93) translateY(14px);
+        opacity: 0;
+        transition:
+          transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.28s ease;
+      }
+      .modal.open > div {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+
       #drawer {
-        transition: transform 0.3s;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
+
       .brand {
         display: flex;
         align-items: center;
@@ -227,7 +369,18 @@
         width: 2.25rem;
         height: 2.25rem;
         flex-shrink: 0;
+        animation: logoBreathe 4.2s ease-in-out infinite;
+        transform-origin: center;
       }
+      @keyframes logoBreathe {
+        0%, 100% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(-4deg) scale(1.06);
+        }
+      }
+
       .brand .bn {
         display: block;
         font-weight: 700;
@@ -265,17 +418,154 @@
         background: linear-gradient(135deg, #f3e8d2, #faebd0);
         overflow: hidden;
       }
+
+      /* Continuous Ambient Motion ("এটা চলতেছে") */
+      .float-slow {
+        animation: floatSlow 5.5s ease-in-out infinite;
+      }
+      @keyframes floatSlow {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-9px);
+        }
+      }
+
+      .float-badge {
+        animation: floatBadge 4s ease-in-out infinite;
+      }
+      @keyframes floatBadge {
+        0%, 100% {
+          transform: translateY(0px) scale(1);
+        }
+        50% {
+          transform: translateY(-4px) scale(1.015);
+        }
+      }
+
+      .pulse-soft {
+        animation: pulseSoft 2.8s ease-in-out infinite;
+      }
+      @keyframes pulseSoft {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.45);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+        }
+      }
+
+      .badge-pop {
+        animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes badgePop {
+        0% {
+          transform: scale(0.5);
+        }
+        70% {
+          transform: scale(1.25);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Hero Staggered Entrance */
+      .hero-stagger-1 {
+        animation: heroEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+      }
+      .hero-stagger-2 {
+        animation: heroEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+      }
+      .hero-stagger-3 {
+        animation: heroEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+      }
+      .hero-stagger-4 {
+        animation: heroEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+      }
+      .hero-art-enter {
+        animation: heroArtEnter 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+      }
+      @keyframes heroEnter {
+        from {
+          opacity: 0;
+          transform: translateY(22px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes heroArtEnter {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Scroll Reveal & Stagger System for Every Section & Item */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px) scale(0.985);
+        transition:
+          opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--stagger, 0ms);
+        will-change: opacity, transform;
+      }
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      /* Dynamic Grid / List Staggered Pop-In */
+      .stagger-item {
+        animation: itemRise 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: var(--stagger, 0ms);
+      }
+      @keyframes itemRise {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Table Row Slide-In */
+      .row-stagger {
+        animation: rowSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: var(--stagger, 0ms);
+      }
+      @keyframes rowSlide {
+        from {
+          opacity: 0;
+          transform: translateX(-14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
       #mdrawer {
         transform: translateX(100%);
         visibility: hidden;
         transition:
-          transform 0.3s ease,
-          visibility 0s 0.3s;
+          transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+          visibility 0s 0.32s;
       }
       #mdrawer.open {
         transform: none;
         visibility: visible;
-        transition: transform 0.3s ease;
+        transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
       }
       #mov {
         opacity: 0;
@@ -287,12 +577,21 @@
         pointer-events: auto;
       }
       #mdrawer.open #mnav a {
-        animation: sl 0.35s both;
+        animation: sl 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
       }
+      #mdrawer.open #mnav a:nth-child(1) { animation-delay: 0.04s; }
+      #mdrawer.open #mnav a:nth-child(2) { animation-delay: 0.08s; }
+      #mdrawer.open #mnav a:nth-child(3) { animation-delay: 0.12s; }
+      #mdrawer.open #mnav a:nth-child(4) { animation-delay: 0.16s; }
+      #mdrawer.open #mnav a:nth-child(5) { animation-delay: 0.20s; }
+      #mdrawer.open #mnav a:nth-child(6) { animation-delay: 0.24s; }
+      #mdrawer.open #mnav a:nth-child(7) { animation-delay: 0.28s; }
+      #mdrawer.open #mnav a:nth-child(8) { animation-delay: 0.32s; }
+
       @keyframes sl {
         from {
           opacity: 0;
-          transform: translateX(18px);
+          transform: translateX(22px);
         }
       }
       #langBtn span.on {
@@ -304,12 +603,16 @@
         border-left: 1px solid var(--bd);
       }
       .fade {
-        animation: fd 0.28s ease-out;
+        animation: fd 0.42s cubic-bezier(0.22, 1, 0.36, 1);
       }
       @keyframes fd {
         from {
           opacity: 0;
-          transform: translateY(8px);
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
       .cert-paper {
@@ -325,14 +628,44 @@
         padding: 0.55rem 0.75rem;
         color: #fff;
         font-size: 0.85rem;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+      }
+      .combo-select:hover {
+        background: rgba(255, 255, 255, 0.18);
       }
       .combo-select option {
         background: #1e1b4b;
         color: #fff;
       }
+
+      /* Smooth FAQ Accordion Opening */
+      details[open] p {
+        animation: faqDrop 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      @keyframes faqDrop {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col">
+    <!-- Top Scroll Progress Bar -->
+    <div id="scrollProgress"></div>
+
     <svg width="0" height="0" style="position: absolute">
       <symbol id="logo" viewBox="0 0 48 48">
         <path
@@ -461,39 +794,47 @@
         >
           <div>
             <span
-              class="card inline-block rounded-full px-4 py-1.5 text-sm pri"
+              class="card inline-block rounded-full px-4 py-1.5 text-sm pri hero-stagger-1"
               data-i18n="hBadge"
             ></span>
             <h1
-              class="text-4xl md:text-5xl font-bold leading-tight mt-5 pri"
+              class="text-4xl md:text-5xl font-bold leading-tight mt-5 pri hero-stagger-2"
               data-i18n="hH"
             ></h1>
-            <p class="mu mt-4 max-w-lg leading-relaxed" data-i18n="hS"></p>
-            <div class="flex flex-wrap gap-3 mt-7">
+            <p class="mu mt-4 max-w-lg leading-relaxed hero-stagger-3" data-i18n="hS"></p>
+            <div class="flex flex-wrap gap-3 mt-7 hero-stagger-4">
               <a href="#products" data-page="products" class="btn" data-i18n="hC1"></a>
               <a href="#guide" data-page="guide" class="btn2" data-i18n="hC2"></a>
             </div>
           </div>
-         <div class="flex flex-col">
-         <div
-           id="heroArt"
-           class="hero rounded-3xl overflow-hidden shadow-lg aspect-[3/2]"
-         >
-           <img
-             src="/Users/showrabchowdhury/Downloads/Bustling Bengali Market Moments.png"
-             alt="খাঁটি ঘর - মধু, ঘি, খেজুর ও তেল"
-             class="w-full h-full object-cover object-center block"
-           />
-         </div>
-         <div
-           class="glass card mt-3 self-start rounded-2xl px-4 py-2.5 text-sm font-semibold shadow-md"
-           data-trust-badge
-         ></div>
-       </div>
+          <div class="flex flex-col hero-art-enter">
+            <div
+              id="heroArt"
+              class="hero rounded-3xl overflow-hidden shadow-lg aspect-[3/2] float-slow relative"
+            >
+              <img
+                src="/Users/showrabchowdhury/Downloads/Bustling Bengali Market Moments.png"
+                alt="খাঁটি ঘর - মধু, ঘি, খেজুর ও তেল"
+                class="w-full h-full object-cover object-center block"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <div style="display:none" class="w-full h-full flex-col items-center justify-center p-6 text-center gap-3">
+                <div class="flex items-center justify-center gap-4 text-5xl sm:text-6xl">
+                  <span>🍯</span><span>🧈</span><span>🌴</span><span>🌾</span>
+                </div>
+                <b class="text-lg sm:text-xl pri">খাঁটি ঘর • KHATI GHOR</b>
+                <span class="text-xs sm:text-sm mu">সুন্দরবনের মধু • পাবনার গাওয়া ঘি • মদিনার খেজুর • কাঠের ঘানির তেল</span>
+              </div>
+            </div>
+            <div
+              class="glass card mt-3 self-start rounded-2xl px-4 py-2.5 text-sm font-semibold shadow-md float-badge"
+              data-trust-badge
+            ></div>
+          </div>
         </section>
 
         <!-- Category Quick Jump Cards -->
-        <section class="max-w-6xl mx-auto px-4 py-8">
+        <section class="max-w-6xl mx-auto px-4 py-8 reveal">
           <div class="flex flex-wrap items-end justify-between gap-2 mb-6">
             <div>
               <h2 class="serif text-2xl md:text-3xl font-bold pri" data-i18n="catSecT"></h2>
@@ -508,13 +849,13 @@
         </section>
 
         <!-- Custom 6-Category Family Purity Combo Builder (25% OFF + Free Nationwide Delivery) -->
-        <section class="max-w-6xl mx-auto px-4 py-6">
+        <section class="max-w-6xl mx-auto px-4 py-6 reveal">
           <div class="combo-banner rounded-3xl p-6 sm:p-8 md:p-10 text-white shadow-xl">
             <div class="flex flex-wrap items-start justify-between gap-4 border-b border-white/15 pb-6">
               <div class="max-w-2xl">
                 <div class="flex flex-wrap items-center gap-2 mb-2.5">
                   <span
-                    class="inline-block rounded-full px-3.5 py-1 text-xs font-bold"
+                    class="inline-block rounded-full px-3.5 py-1 text-xs font-bold pulse-soft"
                     style="background: #fbbf24; color: #1c1917"
                     data-i18n="cB"
                   ></span>
@@ -553,7 +894,7 @@
               <button
                 id="addCombo"
                 type="button"
-                class="btn whitespace-nowrap shrink-0 text-sm sm:text-base !text-stone-950"
+                class="btn whitespace-nowrap shrink-0 text-sm sm:text-base !text-stone-950 pulse-soft"
                 style="background: #fbbf24"
                 data-i18n="cBtn"
               ></button>
@@ -562,7 +903,7 @@
         </section>
 
         <!-- Connected Pages Hub -->
-        <section class="max-w-6xl mx-auto px-4 py-10">
+        <section class="max-w-6xl mx-auto px-4 py-10 reveal">
           <div class="text-center max-w-xl mx-auto">
             <h2 class="serif text-3xl font-bold pri" data-i18n="hubT"></h2>
             <p class="mu text-sm mt-2" data-i18n="hubS"></p>
@@ -574,7 +915,7 @@
         </section>
 
         <!-- Why Khati Ghor -->
-        <section class="max-w-6xl mx-auto px-4 py-10">
+        <section class="max-w-6xl mx-auto px-4 py-10 reveal">
           <h2
             class="serif text-3xl font-bold text-center pri"
             data-i18n="whyT"
@@ -586,7 +927,7 @@
         </section>
 
         <!-- YouTube Video Links Section -->
-        <section class="max-w-6xl mx-auto px-4 py-10">
+        <section class="max-w-6xl mx-auto px-4 py-10 reveal">
           <div class="text-center max-w-2xl mx-auto">
             <h2 class="serif text-3xl font-bold pri" data-i18n="vidT"></h2>
             <p class="mu text-sm mt-2" data-i18n="vidS"></p>
@@ -598,7 +939,7 @@
         </section>
 
         <!-- Sourcing Regions -->
-        <section class="max-w-6xl mx-auto px-4 py-12">
+        <section class="max-w-6xl mx-auto px-4 py-12 reveal">
           <h2
             class="serif text-3xl font-bold text-center pri"
             data-i18n="sT"
@@ -613,18 +954,18 @@
       <!-- ==================== PAGE 1: PRODUCTS ==================== -->
       <div id="page-products" class="page-view hidden fade">
         <section class="max-w-6xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n1"></span>
           </div>
-          <div class="text-center max-w-2xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto stagger-item" style="--stagger:60ms">
             <h1 class="serif text-3xl md:text-4xl font-bold pri" data-i18n="n1"></h1>
             <p class="mu text-sm mt-2" data-i18n="pSub"></p>
           </div>
 
           <!-- Category Filter Bar & Search Box -->
-          <div class="card rounded-2xl p-4 mt-7 space-y-3">
+          <div class="card rounded-2xl p-4 mt-7 space-y-3 stagger-item" style="--stagger:120ms">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <span class="text-xs font-bold uppercase tracking-wider pri" data-i18n="filterLbl"></span>
               <div class="sm:w-64 relative">
@@ -639,7 +980,7 @@
             <div id="catBar" class="flex flex-wrap gap-2"></div>
           </div>
 
-          <div class="flex items-center justify-between mt-6 mb-4 text-sm">
+          <div class="flex items-center justify-between mt-6 mb-4 text-sm stagger-item" style="--stagger:180ms">
             <h2 id="activeCatTitle" class="font-bold text-lg pri"></h2>
             <span id="activeCatCount" class="mu text-xs font-medium"></span>
           </div>
@@ -651,7 +992,7 @@
         </section>
 
         <!-- Callback Request Box -->
-        <section class="max-w-4xl mx-auto px-4 pb-12">
+        <section class="max-w-4xl mx-auto px-4 pb-12 reveal">
           <div
             class="card rounded-2xl p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center"
           >
@@ -678,25 +1019,25 @@
       <!-- ==================== PAGE 2: PURITY GUIDE ==================== -->
       <div id="page-guide" class="page-view hidden fade">
         <section class="max-w-5xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n2"></span>
           </div>
-          <div class="text-center max-w-2xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto stagger-item" style="--stagger:60ms">
             <h1 class="serif text-3xl md:text-4xl font-bold pri" data-i18n="gT"></h1>
             <p class="mu text-sm mt-2" data-i18n="gSub"></p>
           </div>
 
           <div class="mt-9">
-            <div class="text-center mb-5">
+            <div class="text-center mb-5 stagger-item" style="--stagger:120ms">
               <h2 class="text-xl sm:text-2xl font-bold pri" data-i18n="certSecT"></h2>
               <p class="mu text-xs sm:text-sm mt-1" data-i18n="certSecS"></p>
             </div>
             <div id="certCards" class="grid md:grid-cols-3 gap-4"></div>
           </div>
 
-          <div class="mt-12">
+          <div class="mt-12 reveal">
             <div class="text-center mb-5">
               <h2 class="text-xl sm:text-2xl font-bold pri" data-i18n="guideSec2T"></h2>
               <p class="mu text-xs sm:text-sm mt-1" data-i18n="guideSec2S"></p>
@@ -705,7 +1046,7 @@
             <div id="tabBody" class="card rounded-2xl p-6 mt-5 max-w-4xl mx-auto"></div>
           </div>
 
-          <div class="mt-10 text-center">
+          <div class="mt-10 text-center reveal">
             <a href="#products" data-page="products" class="btn" data-i18n="hC1"></a>
           </div>
         </section>
@@ -714,16 +1055,16 @@
       <!-- ==================== PAGE 3: COMPARE ==================== -->
       <div id="page-compare" class="page-view hidden fade">
         <section class="max-w-5xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n3"></span>
           </div>
-          <div class="text-center max-w-2xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto stagger-item" style="--stagger:60ms">
             <h1 class="serif text-3xl md:text-4xl font-bold pri" data-i18n="cmpT"></h1>
             <p class="mu text-sm mt-2" data-i18n="cmpSub"></p>
           </div>
-          <div class="card rounded-2xl mt-8 overflow-x-auto">
+          <div class="card rounded-2xl mt-8 overflow-x-auto stagger-item" style="--stagger:120ms">
             <table class="w-full text-sm min-w-[600px]">
               <thead>
                 <tr class="text-left" style="background: color-mix(in srgb, var(--pri) 8%, var(--card))">
@@ -735,7 +1076,7 @@
               <tbody id="cmp"></tbody>
             </table>
           </div>
-          <div class="mt-10 text-center">
+          <div class="mt-10 text-center reveal">
             <a href="#products" data-page="products" class="btn" data-i18n="hC1"></a>
           </div>
         </section>
@@ -744,12 +1085,12 @@
       <!-- ==================== PAGE 4: REVIEWS ==================== -->
       <div id="page-reviews" class="page-view hidden fade">
         <section class="max-w-6xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n4"></span>
           </div>
-          <div class="text-center max-w-2xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto stagger-item" style="--stagger:60ms">
             <span
               class="card inline-block rounded-full px-4 py-1 text-xs sm:text-sm font-semibold pri mb-3"
               data-trust-badge
@@ -758,7 +1099,7 @@
             <p class="mu text-sm mt-2" data-i18n="revSub"></p>
           </div>
 
-          <div class="card rounded-2xl p-5 sm:p-6 mt-8 max-w-3xl mx-auto">
+          <div class="card rounded-2xl p-5 sm:p-6 mt-8 max-w-3xl mx-auto stagger-item" style="--stagger:120ms">
             <h2 class="font-bold text-lg pri mb-4" data-i18n="revFormT"></h2>
             <form id="revForm" class="space-y-4">
               <div class="grid sm:grid-cols-2 gap-3">
@@ -805,7 +1146,7 @@
 
           <div id="revs" class="grid md:grid-cols-3 gap-4"></div>
 
-          <div id="revMoreWrap" class="mt-8 text-center">
+          <div id="revMoreWrap" class="mt-8 text-center reveal">
             <button id="revMoreBtn" type="button" class="btn2 text-sm sm:text-base"></button>
           </div>
         </section>
@@ -814,17 +1155,17 @@
       <!-- ==================== PAGE 5: FAQ ==================== -->
       <div id="page-faq" class="page-view hidden fade">
         <section class="max-w-3xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n5"></span>
           </div>
-          <div class="text-center max-w-2xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto stagger-item" style="--stagger:60ms">
             <h1 class="serif text-3xl md:text-4xl font-bold pri" data-i18n="faqT"></h1>
             <p class="mu text-sm mt-2" data-i18n="faqSub"></p>
           </div>
 
-          <div class="card rounded-2xl p-4 mt-6">
+          <div class="card rounded-2xl p-4 mt-6 stagger-item" style="--stagger:120ms">
             <div class="flex flex-col sm:flex-row sm:items-center gap-2.5">
               <div class="relative flex-1">
                 <input
@@ -839,7 +1180,7 @@
           </div>
 
           <div id="faqs" class="mt-6 space-y-3"></div>
-          <div class="mt-10 text-center flex flex-wrap justify-center gap-3">
+          <div class="mt-10 text-center flex flex-wrap justify-center gap-3 reveal">
             <a href="#products" data-page="products" class="btn" data-i18n="hC1"></a>
             <a href="tel:011111111111" class="btn2" data-i18n="call"></a>
           </div>
@@ -849,7 +1190,7 @@
       <!-- ==================== PAGE 6: LOGIN & DASHBOARD ==================== -->
       <div id="page-login" class="page-view hidden fade">
         <section class="max-w-5xl mx-auto px-4 pt-8 pb-12">
-          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4">
+          <div class="flex items-center gap-2 text-xs sm:text-sm mu mb-4 stagger-item" style="--stagger:0ms">
             <a href="#home" data-page="home" class="hover:underline pri font-medium" data-i18n="n0"></a>
             <span>/</span>
             <span class="acc font-semibold" data-i18n="n6"></span>
@@ -860,7 +1201,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t mt-8 pb-20 md:pb-0" style="border-color: var(--bd)">
+    <footer class="border-t mt-8 pb-20 md:pb-0 reveal" style="border-color: var(--bd)">
       <div
         class="max-w-6xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-6 text-sm"
       >
@@ -958,7 +1299,7 @@
     </nav>
     <div
       id="toast"
-      class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[90] px-5 py-2 rounded-full text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity"
+      class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[90] px-5 py-2 rounded-full text-white text-sm shadow-lg opacity-0 pointer-events-none transition-all duration-300"
       style="background: var(--pri)"
     ></div>
 
@@ -993,7 +1334,7 @@
           <div class="h-2 rounded-full mt-1.5" style="background: var(--bd)">
             <div
               id="fdBar"
-              class="h-2 rounded-full"
+              class="h-2 rounded-full transition-all duration-500"
               style="background: var(--acc); width: 0"
             ></div>
           </div>
@@ -1071,6 +1412,40 @@
 
       const VALID_PAGES = ["home", "products", "guide", "compare", "reviews", "faq", "login"];
       const FD_LIMIT = 1500;
+
+      // ==================== SCROLL REVEAL & PROGRESS ENGINE ====================
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in-view");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+      );
+
+      function observeReveals(scope = document) {
+        scope.querySelectorAll(".reveal").forEach((el) => {
+          if (!el.classList.contains("in-view")) {
+            revealObserver.observe(el);
+          }
+        });
+      }
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          const bar = $("#scrollProgress");
+          if (!bar) return;
+          const docH =
+            document.documentElement.scrollHeight - window.innerHeight;
+          const pct = docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) : 0;
+          bar.style.width = pct + "%";
+        },
+        { passive: true },
+      );
 
       // Custom Vector SVG Artworks
       const SVGS = {
@@ -2009,12 +2384,12 @@
               : `Save ${money(saved)} (25% OFF) + Free Nationwide Delivery`;
         }
 
-        container.innerHTML = COMBO_CATS.map((catId) => {
+        container.innerHTML = COMBO_CATS.map((catId, idx) => {
           const catObj = CATEGORIES.find((c) => c.id === catId);
           const catProds = PRODUCTS_DATA.filter((p) => p.cat === catId);
           const currentPid = comboSelections[catId];
           return `
-            <div class="rounded-2xl p-3.5 border border-white/15 bg-white/5">
+            <div class="rounded-2xl p-3.5 border border-white/15 bg-white/5 stagger-item" style="--stagger:${idx * 70}ms">
               <label class="block text-xs font-bold mb-1.5" style="color:#fbbf24">
                 ${catObj.icon} ${lang === "bn" ? catObj.bn.split(" (")[0] : catObj.en}
               </label>
@@ -2074,16 +2449,17 @@
         const grid = $("#videoLinksGrid");
         if (!grid) return;
         grid.innerHTML = YOUTUBE_VIDEOS.map(
-          (v) => `
+          (v, idx) => `
           <a
             href="${v.url}"
             target="_blank"
             rel="noopener"
-            class="card rounded-2xl overflow-hidden flex flex-col justify-between group hover:-translate-y-1 transition-transform"
+            style="--stagger:${idx * 100}ms"
+            class="card rounded-2xl overflow-hidden flex flex-col justify-between group hover:-translate-y-1.5 reveal"
           >
             <div>
               <div class="h-44 relative flex items-center justify-center" style="background: linear-gradient(135deg, #1e1b4b, #311042)">
-                <div class="w-14 h-14 rounded-full bg-red-600 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-full bg-red-600 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform pulse-soft">
                   ▶
                 </div>
                 <span class="absolute bottom-2.5 right-2.5 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-black/75 text-white">
@@ -2105,6 +2481,7 @@
             </div>
           </a>`,
         ).join("");
+        observeReveals(grid);
       }
 
       // ==================== REVIEWS GENERATOR ====================
@@ -2789,8 +3166,12 @@
         const el = $("#toast");
         el.textContent = msg;
         el.style.opacity = "1";
+        el.style.transform = "translate(-50%, -6px)";
         clearTimeout(el._t);
-        el._t = setTimeout(() => (el.style.opacity = "0"), 2400);
+        el._t = setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transform = "translate(-50%, 0px)";
+        }, 2400);
       }
 
       function updateThemeUI() {
@@ -2854,6 +3235,14 @@
           target.classList.remove("fade");
           void target.offsetWidth;
           target.classList.add("fade");
+
+          // Re-trigger staggered animations inside the newly opened page
+          target.querySelectorAll(".stagger-item, .row-stagger").forEach((el) => {
+            el.style.animation = "none";
+            void el.offsetWidth;
+            el.style.animation = "";
+          });
+          observeReveals(target);
         }
         $$("[data-page]").forEach((a) => {
           if (!a.classList.contains("brand")) {
@@ -2888,29 +3277,39 @@
         if (VALID_PAGES.includes(h) && h !== currentPage) goPage(h, false);
       });
 
-      function saveCart() {
+      function saveCart(animateBadge = false) {
         localStorage.setItem("kg_cart", JSON.stringify(cart));
         const n = cart.reduce((a, b) => a + b.qty, 0);
         const sub = cart.reduce((a, b) => a + b.price * b.qty, 0);
         $("#badge").textContent = num(n);
         $("#floatN").textContent = num(n);
         $("#floatSub").textContent = sub ? " " + money(sub) : "";
+        if (animateBadge) {
+          [$("#badge"), $("#floatN")].forEach((b) => {
+            if (!b) return;
+            b.classList.remove("badge-pop");
+            void b.offsetWidth;
+            b.classList.add("badge-pop");
+          });
+        }
         renderCart();
       }
 
       function renderHomeCats() {
         const cats = CATEGORIES.filter((c) => c.id !== "all");
-        $("#homeCatGrid").innerHTML = cats
-          .map((c) => {
+        const grid = $("#homeCatGrid");
+        grid.innerHTML = cats
+          .map((c, idx) => {
             const count = PRODUCTS_DATA.filter((p) => p.cat === c.id).length;
             const title = lang === "bn" ? c.bn.split(" (")[0] : c.en;
-            return `<button onclick="openCategory('${c.id}')" class="card rounded-2xl p-4 text-center hover:-translate-y-1 transition-transform cursor-pointer group">
-              <div class="text-3xl mb-1.5 group-hover:scale-110 transition-transform">${c.icon}</div>
+            return `<button onclick="openCategory('${c.id}')" style="--stagger:${idx * 65}ms" class="card rounded-2xl p-4 text-center hover:-translate-y-1.5 cursor-pointer group reveal">
+              <div class="text-3xl mb-1.5 group-hover:scale-115 transition-transform duration-300">${c.icon}</div>
               <b class="text-sm pri block">${title}</b>
               <span class="text-[11px] mu mt-0.5 block">${num(count)} ${lang === "bn" ? "টি পণ্য" : "items"}</span>
             </button>`;
           })
           .join("");
+        observeReveals(grid);
       }
 
       function renderCategoryBar() {
@@ -2932,7 +3331,7 @@
         renderProducts();
       };
 
-      function renderProducts() {
+      function renderProducts(animateGrid = true) {
         const t = T[lang];
         const q = searchQuery.trim().toLowerCase();
         const filtered = PRODUCTS_DATA.filter((p) => {
@@ -2952,17 +3351,18 @@
         $("#activeCatCount").textContent = t.showingCount(filtered.length);
 
         if (!filtered.length) {
-          $("#grid").innerHTML = `<div class="col-span-full card rounded-2xl p-10 text-center mu">${t.noProd}</div>`;
+          $("#grid").innerHTML = `<div class="col-span-full card rounded-2xl p-10 text-center mu stagger-item">${t.noProd}</div>`;
           return;
         }
 
         $("#grid").innerHTML = filtered
-          .map((p) => {
+          .map((p, i) => {
             const d = p[lang],
               idx = selSize[p.id] || 0,
               sz = p.sizes[idx];
             const catMeta = CATEGORIES.find((c) => c.id === p.cat);
-            return `<article class="card rounded-2xl overflow-hidden flex flex-col hover:-translate-y-0.5 transition-transform">
+            const delay = Math.min(i, 15) * 45;
+            return `<article style="--stagger:${delay}ms" class="card rounded-2xl overflow-hidden flex flex-col hover:-translate-y-1.5 ${animateGrid ? "stagger-item" : ""}">
               <div onclick="openQV('${p.id}')" class="img h-44 relative cursor-pointer group" title="${t.det}">
                 ${SVGS[p.svg] || SVGS.honey}
                 <span class="absolute top-2.5 left-2.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full glass border" style="border-color:var(--bd)">
@@ -2999,7 +3399,7 @@
 
       window.pick = (id, i) => {
         selSize[id] = i;
-        renderProducts();
+        renderProducts(false);
       };
 
       window.addItem = (id, forcedSizeIdx = null) => {
@@ -3019,7 +3419,7 @@
             qty: 1,
             isCombo: false,
           });
-        saveCart();
+        saveCart(true);
         toast(T[lang].added);
       };
 
@@ -3040,7 +3440,7 @@
             qty: 1,
             isCombo: true,
           });
-        saveCart();
+        saveCart(true);
         toast(T[lang].added);
       };
 
@@ -3181,8 +3581,8 @@
       function renderCertificates() {
         const t = T[lang];
         $("#certCards").innerHTML = CERTIFICATES.map(
-          (c) => `
-          <div onclick="openCertModal('${c.id}')" class="cert-paper rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-transform shadow-md flex flex-col justify-between">
+          (c, idx) => `
+          <div onclick="openCertModal('${c.id}')" style="--stagger:${140 + idx * 90}ms" class="cert-paper rounded-2xl p-5 cursor-pointer hover:-translate-y-1.5 transition-transform shadow-md flex flex-col justify-between stagger-item">
             <div>
               <div class="flex items-center justify-between gap-2 border-b border-amber-700/30 pb-2.5">
                 <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full text-white" style="background:${c.accent}">
@@ -3296,7 +3696,7 @@
 
         const visibleList = showAllReviews ? all : all.slice(0, 50);
         $("#revs").innerHTML = visibleList
-          .map((r) => {
+          .map((r, idx) => {
             const pObj = PRODUCTS_DATA.find((x) => x.id === r.prodId) || PRODUCTS_DATA[0];
             const prodName = pObj[lang].n;
             const name = r.userAdded ? r.name : lang === "bn" ? r.name_bn : r.name_en;
@@ -3305,7 +3705,8 @@
             const dateStr = r.userAdded ? r.date : lang === "bn" ? r.date_bn : r.date_en;
             const st = Number(r.stars || 5);
             const starStr = "★".repeat(st) + "☆".repeat(5 - st);
-            return `<div class="card rounded-2xl p-5 flex flex-col justify-between">
+            const delay = Math.min(idx, 14) * 45;
+            return `<div style="--stagger:${delay}ms" class="card rounded-2xl p-5 flex flex-col justify-between stagger-item">
               <div>
                 <div class="flex items-center justify-between gap-2">
                   <div class="acc text-sm tracking-wide">${starStr}</div>
@@ -3397,13 +3798,13 @@
         if ($("#faqCountLbl")) $("#faqCountLbl").textContent = t.faqCount(list.length);
 
         if (!list.length) {
-          $("#faqs").innerHTML = `<div class="card rounded-xl p-8 text-center mu text-sm">${t.faqEmpty}</div>`;
+          $("#faqs").innerHTML = `<div class="card rounded-xl p-8 text-center mu text-sm stagger-item">${t.faqEmpty}</div>`;
           return;
         }
         $("#faqs").innerHTML = list
           .map(
-            (f) =>
-              `<details class="card rounded-xl p-4"><summary class="font-semibold cursor-pointer pri">${f[0]}</summary><p class="mu text-sm mt-2 leading-relaxed">${f[1]}</p></details>`,
+            (f, idx) =>
+              `<details style="--stagger:${idx * 40}ms" class="card rounded-xl p-4 stagger-item"><summary class="font-semibold cursor-pointer pri">${f[0]}</summary><p class="mu text-sm mt-2 leading-relaxed">${f[1]}</p></details>`,
           )
           .join("");
       }
@@ -3421,7 +3822,7 @@
 
         if (!currentUser) {
           box.innerHTML = `
-            <div class="max-w-md mx-auto">
+            <div class="max-w-md mx-auto stagger-item" style="--stagger:60ms">
               <div class="text-center mb-6">
                 <h1 class="serif text-3xl font-bold pri">${lang === "bn" ? "অ্যাকাউন্ট লগইন ও রেজিস্ট্রেশন" : "Account Login & Registration"}</h1>
                 <p class="mu text-sm mt-1.5">${lang === "bn" ? "আপনার অর্ডার ইতিহাস দেখতে বা নতুন অ্যাকাউন্ট তৈরি করতে নিচের ফর্ম ব্যবহার করুন" : "Sign in to view your orders or create a new user account"}</p>
@@ -3448,72 +3849,81 @@
                   <p id="loginErr" class="text-xs text-red-500 min-h-[1rem]"></p>
                   <button type="submit" class="btn w-full text-sm">${lang === "bn" ? "লগইন করুন" : "Login"}</button>
                   <div class="text-xs mu pt-2 border-t space-y-1" style="border-color:var(--bd)">
-                    <p>👤 <b>${lang === "bn" ? "ডেমো ইউজার:" : "Demo User:"}</b> ID: <code>user1</code> | Pass: <code>user123</code></p>
+                    <p>👤 <b>${lang === "bn" ? "ইউজার লগইন:" : "User Demo:"}</b> ID: <code>user1</code> | Pass: <code>user123</code></p>
+                    <p>🛡️ <b>${lang === "bn" ? "অ্যাডমিন লগইন:" : "Admin Login:"}</b> ID: <code>admin</code> | Pass: <code>admin123</code></p>
                   </div>
                 </form>
 
-                <form id="signupForm" class="space-y-3.5 hidden">
+                <form id="signupForm" class="hidden space-y-3.5">
                   <div>
-                    <label class="block text-xs font-semibold mu mb-1">${lang === "bn" ? "নতুন ইউজার আইডি নির্বাচন করুন *" : "Choose a User ID *"}</label>
-                    <input id="regIdInp" class="inp text-sm" placeholder="${lang === "bn" ? "যেমন: rahim2026" : "e.g. rahim2026"}" required />
+                    <label class="block text-xs font-semibold mu mb-1">${lang === "bn" ? "নতুন ইউজার আইডি (User ID) *" : "Choose a User ID *"}</label>
+                    <input id="regIdInp" class="inp text-sm" placeholder="${lang === "bn" ? "যেমন: tanvir2026" : "e.g. tanvir2026"}" required />
                   </div>
                   <div>
-                    <label class="block text-xs font-semibold mu mb-1">${lang === "bn" ? "পাসওয়ার্ড তৈরি করুন *" : "Create Password *"}</label>
-                    <input id="regPassInp" type="password" class="inp text-sm" placeholder="${lang === "bn" ? "কমপক্ষে ৪ অক্ষর" : "Min 4 characters"}" required />
+                    <label class="block text-xs font-semibold mu mb-1">${lang === "bn" ? "নতুন পাসওয়ার্ড *" : "Create Password *"}</label>
+                    <input id="regPassInp" type="password" class="inp text-sm" placeholder="${lang === "bn" ? "কমপক্ষে ৪ অক্ষরের পাসওয়ার্ড" : "Min 4 characters"}" required />
                   </div>
                   <p id="regErr" class="text-xs text-red-500 min-h-[1rem]"></p>
-                  <button type="submit" class="btn w-full text-sm">${lang === "bn" ? "ইউজার অ্যাকাউন্ট তৈরি করুন" : "Create User Account"}</button>
+                  <button type="submit" class="btn w-full text-sm">${lang === "bn" ? "অ্যাকাউন্ট তৈরি করুন" : "Create User Account"}</button>
                 </form>
               </div>
-            </div>
-          `;
+            </div>`;
 
           $("#signinForm").onsubmit = (e) => {
             e.preventDefault();
-            const id = $("#loginIdInp").value.trim();
-            const pass = $("#loginPassInp").value;
-            if (id === "admin" && pass === "admin123") {
+            const uid = $("#loginIdInp").value.trim();
+            const pwd = $("#loginPassInp").value.trim();
+            if (uid === "admin" && pwd === "admin123") {
               currentUser = { id: "admin", role: "admin" };
               localStorage.setItem("kg_session", JSON.stringify(currentUser));
               updateLoginNavLabel();
               renderAuthPage();
+              toast(lang === "bn" ? "অ্যাডমিন হিসেবে লগইন সফল হয়েছে!" : "Logged in as Admin!");
               return;
             }
-            const u = registeredUsers[id];
-            if (u && u.pass === pass) {
-              currentUser = { id: u.id, role: "user" };
+            const found = registeredUsers[uid];
+            if (found && found.pass === pwd) {
+              currentUser = { id: uid, role: "user" };
               localStorage.setItem("kg_session", JSON.stringify(currentUser));
               updateLoginNavLabel();
               renderAuthPage();
-              return;
+              toast(lang === "bn" ? `স্বাগতম, ${uid}!` : `Welcome, ${uid}!`);
+            } else {
+              $("#loginErr").textContent =
+                lang === "bn"
+                  ? "ইউজার আইডি বা পাসওয়ার্ড সঠিক নয়।"
+                  : "Invalid User ID or Password.";
             }
-            $("#loginErr").textContent =
-              lang === "bn"
-                ? "ভুল ইউজার আইডি বা পাসওয়ার্ড! আবার চেষ্টা করুন।"
-                : "Invalid User ID or Password!";
           };
 
           $("#signupForm").onsubmit = (e) => {
             e.preventDefault();
-            const id = $("#regIdInp").value.trim();
-            const pass = $("#regPassInp").value;
-            if (!id || id.toLowerCase() === "admin" || registeredUsers[id]) {
+            const uid = $("#regIdInp").value.trim();
+            const pwd = $("#regPassInp").value.trim();
+            if (uid.length < 3 || uid.toLowerCase() === "admin") {
               $("#regErr").textContent =
                 lang === "bn"
-                  ? "এই ইউজার আইডিটি ইতিমধ্যে ব্যবহৃত বা সংরক্ষিত।"
-                  : "This User ID is already taken or reserved.";
+                  ? "অন্য একটি বৈধ ইউজার আইডি দিন (কমপক্ষে ৩ অক্ষর)।"
+                  : "Please choose a valid User ID (min 3 chars).";
               return;
             }
-            if (pass.length < 4) {
+            if (pwd.length < 4) {
               $("#regErr").textContent =
                 lang === "bn"
                   ? "পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে।"
                   : "Password must be at least 4 characters.";
               return;
             }
-            registeredUsers[id] = {
-              id,
-              pass,
+            if (registeredUsers[uid]) {
+              $("#regErr").textContent =
+                lang === "bn"
+                  ? "এই ইউজার আইডি ইতিমধ্যে ব্যবহৃত হয়েছে।"
+                  : "This User ID already exists.";
+              return;
+            }
+            registeredUsers[uid] = {
+              id: uid,
+              pass: pwd,
               created: new Date().toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
@@ -3521,88 +3931,83 @@
               }),
             };
             localStorage.setItem("kg_users", JSON.stringify(registeredUsers));
-            currentUser = { id, role: "user" };
+            currentUser = { id: uid, role: "user" };
             localStorage.setItem("kg_session", JSON.stringify(currentUser));
             updateLoginNavLabel();
-            toast(lang === "bn" ? "অ্যাকাউন্ট তৈরি সফল হয়েছে! 🎉" : "Account created successfully! 🎉");
             renderAuthPage();
+            toast(lang === "bn" ? "নতুন ইউজার অ্যাকাউন্ট তৈরি হয়েছে!" : "User account created!");
           };
           return;
         }
 
-        const ordersMap = getAllOrders();
-        const ordersList = Object.values(ordersMap).reverse();
+        const allOrders = Object.values(getAllOrders()).reverse();
         const t = T[lang];
 
         if (currentUser.role === "admin") {
-          const userKeys = Object.keys(registeredUsers);
+          const allRevs = getAllReviews();
           box.innerHTML = `
-            <div class="space-y-8">
-              <div class="card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-3">
+            <div class="space-y-6 stagger-item" style="--stagger:60ms">
+              <div class="card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <span class="text-xs font-bold uppercase tracking-wider acc">ADMINISTRATOR ACCESS</span>
-                  <h1 class="text-2xl font-bold pri">${lang === "bn" ? "অ্যাডমিন কন্ট্রোল ড্যাশবোর্ড" : "Admin Control Dashboard"}</h1>
+                  <span class="text-xs font-bold uppercase tracking-wider acc">🛡️ Admin Control Panel</span>
+                  <h1 class="serif text-2xl sm:text-3xl font-bold pri">${lang === "bn" ? "স্বাগতম, অ্যাডমিন (admin)" : "Welcome, Administrator (admin)"}</h1>
+                  <p class="mu text-xs sm:text-sm mt-0.5">${lang === "bn" ? "সকল কাস্টমার অর্ডার স্ট্যাটাস আপডেট ও রিভিউ পরিচালনা করুন" : "Manage customer order delivery stages & reviews"}</p>
                 </div>
-                <button onclick="logoutUser()" class="btn2 text-xs sm:text-sm">🚪 ${lang === "bn" ? "লগআউট" : "Logout"}</button>
+                <button onclick="logoutUser()" class="btn2 text-xs sm:text-sm">
+                  🚪 ${lang === "bn" ? "লগআউট" : "Logout"}
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="card rounded-2xl p-4">
+                  <span class="text-xs mu">${lang === "bn" ? "মোট অর্ডার" : "Total Orders"}</span>
+                  <b class="text-2xl pri block mt-1">${num(allOrders.length)}</b>
+                </div>
+                <div class="card rounded-2xl p-4">
+                  <span class="text-xs mu">${lang === "bn" ? "মোট পণ্য" : "Total Products"}</span>
+                  <b class="text-2xl acc block mt-1">${num(PRODUCTS_DATA.length)}</b>
+                </div>
+                <div class="card rounded-2xl p-4">
+                  <span class="text-xs mu">${lang === "bn" ? "নিবন্ধিত ইউজার" : "Registered Users"}</span>
+                  <b class="text-2xl pri block mt-1">${num(Object.keys(registeredUsers).length)}</b>
+                </div>
+                <div class="card rounded-2xl p-4">
+                  <span class="text-xs mu">${lang === "bn" ? "মোট রিভিউ" : "Total Reviews"}</span>
+                  <b class="text-2xl acc block mt-1">${num(allRevs.length)}</b>
+                </div>
               </div>
 
               <div class="card rounded-2xl p-5 space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <h2 class="text-lg font-bold pri">📦 ${lang === "bn" ? "সকল অর্ডার ও ডেলিভারি স্ট্যাটাস নিয়ন্ত্রণ" : "All Orders & Delivery Stage Control"}</h2>
-                  <span class="text-xs mu">${lang === "bn" ? "মোট অর্ডার:" : "Total Orders:"} <b>${num(ordersList.length)}</b></span>
+                  <h2 class="font-bold text-lg pri">📦 ${lang === "bn" ? "অর্ডার ট্র্যাকিং স্ট্যাটাস নিয়ন্ত্রণ (অ্যাডমিন)" : "Order Tracking Stage Control (Admin Only)"}</h2>
+                  <span class="text-xs mu">${lang === "bn" ? "পরিবর্তন করলে কাস্টমারের ট্র্যাক অর্ডার পপআপেও আপডেট হবে" : "Updates reflect immediately in customer Track Order view"}</span>
                 </div>
-                <div class="space-y-3">
-                  ${ordersList
-                    .map(
-                      (o) => `<div class="rounded-xl p-4 border space-y-3" style="border-color:var(--bd); background:var(--bg)">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                          <div>
-                            <b class="pri text-base">${o.id}</b>
-                            <span class="text-xs mu ml-2">• ${o.date} • ${t.trArea[o.area]}</span>
-                            <p class="text-xs mu mt-0.5">${o.customer ? `${o.customer} (${o.phone || ""})` : ""}</p>
-                            ${o.items ? `<p class="text-xs mt-1 font-medium">${o.items}</p>` : ""}
-                          </div>
-                          <div class="flex items-center gap-2">
-                            <label class="text-xs font-semibold mu">${lang === "bn" ? "ধাপ:" : "Stage:"}</label>
-                            <select onchange="adminSetOrderStep('${o.id}', this.value)" class="inp !w-auto !py-1.5 !text-xs font-semibold">
-                              ${t.trSteps
-                                .map(
-                                  (st, idx) =>
-                                    `<option value="${idx}" ${Number(o.step) === idx ? "selected" : ""}>${idx + 1}. ${st}</option>`,
-                                )
-                                .join("")}
-                            </select>
-                          </div>
-                        </div>
-                      </div>`,
-                    )
-                    .join("")}
-                </div>
-              </div>
-
-              <div class="card rounded-2xl p-5 space-y-4">
-                <h2 class="text-lg font-bold pri">👥 ${lang === "bn" ? "নিবন্ধিত ইউজার তালিকা" : "Registered Users"} (${num(userKeys.length)})</h2>
                 <div class="overflow-x-auto">
-                  <table class="w-full text-xs sm:text-sm text-left">
+                  <table class="w-full text-xs sm:text-sm min-w-[680px]">
                     <thead>
-                      <tr class="border-b" style="border-color:var(--bd)">
-                        <th class="py-2 px-3">User ID</th>
-                        <th class="py-2 px-3">Created</th>
-                        <th class="py-2 px-3 text-right">Action</th>
+                      <tr class="text-left" style="background:color-mix(in srgb, var(--pri) 8%, var(--card))">
+                        <th class="p-3 font-bold">Order ID</th>
+                        <th class="p-3 font-bold">${lang === "bn" ? "কাস্টমার / ফোন" : "Customer / Phone"}</th>
+                        <th class="p-3 font-bold">${lang === "bn" ? "পণ্যসমূহ" : "Items"}</th>
+                        <th class="p-3 font-bold">${lang === "bn" ? "বর্তমান ধাপ পরিবর্তন" : "Change Tracking Stage"}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      ${userKeys
+                      ${allOrders
                         .map(
-                          (uk) => `<tr class="border-b last:border-0" style="border-color:var(--bd)">
-                            <td class="py-2.5 px-3 font-semibold pri">${uk}</td>
-                            <td class="py-2.5 px-3 mu">${registeredUsers[uk].created || "Nov 2026"}</td>
-                            <td class="py-2.5 px-3 text-right">
-                              ${
-                                uk === "user1"
-                                  ? `<span class="text-xs mu">Default</span>`
-                                  : `<button onclick="adminDeleteUser('${uk}')" class="text-xs text-red-500 font-semibold hover:underline">Delete</button>`
-                              }
+                          (o) => `<tr class="border-t" style="border-color:var(--bd)">
+                            <td class="p-3 font-mono font-bold pri">${o.id}<span class="block text-[11px] font-sans mu">${o.date}</span></td>
+                            <td class="p-3"><b>${o.customer || "Customer"}</b><span class="block text-xs mu">${o.phone || "011111111111"}</span></td>
+                            <td class="p-3 text-xs max-w-xs">${o.items || "Khati Ghor Order"}</td>
+                            <td class="p-3">
+                              <select onchange="adminUpdateOrderStep('${o.id}', this.value)" class="inp !py-1.5 !text-xs font-semibold">
+                                ${t.trSteps
+                                  .map(
+                                    (st, idx) =>
+                                      `<option value="${idx}" ${Number(o.step) === idx ? "selected" : ""}>${idx + 1}. ${st}</option>`,
+                                  )
+                                  .join("")}
+                              </select>
                             </td>
                           </tr>`,
                         )
@@ -3611,59 +4016,62 @@
                   </table>
                 </div>
               </div>
-            </div>
-          `;
+            </div>`;
           return;
         }
 
-        const userOrders = ordersList.filter(
-          (o) => !o.userId || o.userId === currentUser.id,
+        const userOrders = allOrders.filter(
+          (o) => o.userId === currentUser.id || o.id === "KG-1042" || o.id === "KG-1089",
         );
+
         box.innerHTML = `
-          <div class="space-y-6">
-            <div class="card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-3">
+          <div class="space-y-6 stagger-item" style="--stagger:60ms">
+            <div class="card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <span class="text-xs font-bold uppercase tracking-wider acc">USER ACCOUNT</span>
-                <h1 class="text-2xl font-bold pri">${lang === "bn" ? "স্বাগতম," : "Welcome,"} ${currentUser.id}</h1>
+                <span class="text-xs font-bold uppercase tracking-wider pri">👤 User Account</span>
+                <h1 class="serif text-2xl sm:text-3xl font-bold pri">${lang === "bn" ? `স্বাগতম, ${currentUser.id}` : `Welcome, ${currentUser.id}`}</h1>
+                <p class="mu text-xs sm:text-sm mt-0.5">${lang === "bn" ? "আপনার অর্ডার ইতিহাস ও লাইভ ডেলিভারি স্ট্যাটাস দেখুন" : "View your order history & live delivery progress"}</p>
               </div>
-              <button onclick="logoutUser()" class="btn2 text-xs sm:text-sm">🚪 ${lang === "bn" ? "লগআউট" : "Logout"}</button>
+              <div class="flex gap-2">
+                <a href="#products" data-page="products" class="btn text-xs sm:text-sm">${t.hC1}</a>
+                <button onclick="logoutUser()" class="btn2 text-xs sm:text-sm">🚪 ${lang === "bn" ? "লগআউট" : "Logout"}</button>
+              </div>
             </div>
 
             <div class="card rounded-2xl p-5 space-y-4">
-              <div class="flex items-center justify-between">
-                <h2 class="text-lg font-bold pri">🛍️ ${lang === "bn" ? "আপনার অর্ডারসমূহ ও লাইভ স্ট্যাটাস" : "Your Orders & Live Status"}</h2>
-                <button onclick="renderAuthPage()" class="pill !py-1 !px-3 text-xs font-semibold pri">${t.trRefresh}</button>
-              </div>
+              <h2 class="font-bold text-lg pri">📦 ${lang === "bn" ? "আপনার অর্ডারসমূহ (শুধুমাত্র দেখার জন্য)" : "Your Orders (Read-Only Status)"}</h2>
               <div class="space-y-3">
                 ${userOrders
-                  .map(
-                    (o) => `<div class="rounded-xl p-4 border space-y-2" style="border-color:var(--bd); background:var(--bg)">
-                      <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          <b class="pri text-base">${o.id}</b>
-                          <span class="text-xs mu ml-2">${o.date}</span>
+                  .map((o) => {
+                    const stLabel = t.trSteps[Math.min(3, Math.max(0, Number(o.step) || 0))];
+                    return `<div class="rounded-xl p-4 border flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="border-color:var(--bd)">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <b class="font-mono pri">${o.id}</b>
+                          <span class="text-xs mu">• ${o.date}</span>
                         </div>
-                        <button onclick="openTrack('${o.id}')" class="btn !py-1.5 !px-3 text-xs">${t.trk}</button>
+                        <p class="text-xs mu mt-1">${o.items || "Khati Ghor Pure Essentials"}</p>
                       </div>
-                      ${o.items ? `<p class="text-xs mu">${o.items}</p>` : ""}
-                      <div class="text-xs font-semibold acc">
-                        ● ${t.trSteps[Number(o.step) || 0]} (${Number(o.step) + 1}/4)
+                      <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600/15 text-emerald-700 dark:text-emerald-300">
+                          ✓ ${stLabel}
+                        </span>
+                        <button onclick="openTrackWithId('${o.id}')" class="btn2 !px-3 !py-1 text-xs">${t.trk}</button>
                       </div>
-                    </div>`,
-                  )
+                    </div>`;
+                  })
                   .join("")}
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }
 
       window.switchAuthTab = (mode) => {
-        const isSignIn = mode === "signin";
-        $("#signinForm").classList.toggle("hidden", !isSignIn);
-        $("#signupForm").classList.toggle("hidden", isSignIn);
-        $("#tabSignIn").classList.toggle("on", isSignIn);
-        $("#tabSignUp").classList.toggle("on", !isSignIn);
+        const isIn = mode === "signin";
+        $("#tabSignIn").classList.toggle("on", isIn);
+        $("#tabSignUp").classList.toggle("on", !isIn);
+        $("#signinForm").classList.toggle("hidden", !isIn);
+        $("#signupForm").classList.toggle("hidden", isIn);
       };
 
       window.logoutUser = () => {
@@ -3671,13 +4079,15 @@
         localStorage.removeItem("kg_session");
         updateLoginNavLabel();
         renderAuthPage();
+        toast(lang === "bn" ? "লগআউট সম্পন্ন হয়েছে।" : "Logged out successfully.");
       };
 
-      window.adminSetOrderStep = (oid, stepVal) => {
+      window.adminUpdateOrderStep = (oid, newStep) => {
+        const stepVal = Number(newStep);
         const saved = JSON.parse(localStorage.getItem("kg_orders") || "{}");
         const base = getAllOrders()[oid];
         if (!base) return;
-        saved[oid] = { ...base, step: Number(stepVal) };
+        saved[oid] = { ...base, step: stepVal };
         localStorage.setItem("kg_orders", JSON.stringify(saved));
         toast(
           lang === "bn"
@@ -3686,16 +4096,19 @@
         );
       };
 
-      window.adminDeleteUser = (uid) => {
-        delete registeredUsers[uid];
-        localStorage.setItem("kg_users", JSON.stringify(registeredUsers));
-        renderAuthPage();
+      window.openTrackWithId = (oid) => {
+        openTrack();
+        const inp = $("#trIn");
+        if (inp) {
+          inp.value = oid;
+          renderTrackResult(oid);
+        }
       };
 
       function renderCart() {
         const t = T[lang];
         if (!cart.length) {
-          $("#items").innerHTML = `<p class="mu text-center py-10">${t.empty}</p>`;
+          $("#items").innerHTML = `<p class="mu py-12 text-center">${t.empty}</p>`;
           $("#co").classList.add("hidden");
           return;
         }
@@ -3703,58 +4116,51 @@
         $("#items").innerHTML = cart
           .map((c, idx) => {
             let name = "",
-              szLbl = "",
-              svgKey = "honey";
+              subLabel = "";
             if (c.isCombo) {
               name = t.comboName;
               const pickedNames = (c.pickedIds || [])
                 .map((pid) => {
-                  const pr = PRODUCTS_DATA.find((x) => x.id === pid);
-                  return pr ? pr[lang].n : "";
+                  const pObj = PRODUCTS_DATA.find((x) => x.id === pid);
+                  return pObj ? pObj[lang].n : "";
                 })
                 .filter(Boolean)
                 .join(", ");
-              szLbl = pickedNames;
-              svgKey = "honey";
+              subLabel = pickedNames;
             } else {
-              const p = PRODUCTS_DATA.find((x) => x.id === c.id);
-              name = p ? p[lang].n : c.id;
-              const sz = p ? p.sizes[c.sizeIdx] : null;
-              szLbl = sz ? (lang === "bn" ? sz.l_bn : sz.l_en) : "";
-              svgKey = p ? p.svg : "honey";
+              const pObj = PRODUCTS_DATA.find((x) => x.id === c.id);
+              if (pObj) {
+                name = pObj[lang].n;
+                const sz = pObj.sizes[c.sizeIdx || 0];
+                subLabel = lang === "bn" ? sz.l_bn : sz.l_en;
+              }
             }
-            return `<div class="card rounded-xl p-3 flex gap-3 items-center"><div class="img w-14 h-14 rounded-lg shrink-0">${SVGS[svgKey]}</div><div class="flex-1 min-w-0"><b class="text-sm block truncate">${name}</b><span class="text-xs mu block line-clamp-2">${szLbl} • ${money(c.price)}</span></div><div class="flex items-center gap-1.5"><button onclick="qty(${idx},-1)" class="pill !px-2 !py-0.5">-</button><b class="text-sm">${num(c.qty)}</b><button onclick="qty(${idx},1)" class="pill !px-2 !py-0.5">+</button></div></div>`;
+            return `<div class="card rounded-xl p-3 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <b class="text-sm block truncate">${name}</b>
+                ${subLabel ? `<span class="text-[11px] mu block line-clamp-2">${subLabel}</span>` : ""}
+                <span class="text-xs font-semibold pri">${money(c.price)} × ${num(c.qty)}</span>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="chg(${idx},-1)" class="pill !px-2.5">−</button>
+                <b class="w-5 text-center">${num(c.qty)}</b>
+                <button onclick="chg(${idx},1)" class="pill !px-2.5">+</button>
+                <button onclick="delC(${idx})" class="text-red-600 ml-1" aria-label="Remove">🗑</button>
+              </div>
+            </div>`;
           })
           .join("");
 
-        const sub = cart.reduce((a, b) => a + b.price * b.qty, 0),
-          dis = coupon ? Math.round(sub * 0.1) : 0,
-          after = sub - dis,
-          hasCombo = cart.some((c) => c.isCombo),
-          del = hasCombo || after >= FD_LIMIT ? 0 : +$("#zone").value,
-          tot = after + del;
-        const pct = hasCombo ? 100 : Math.min(100, (after / FD_LIMIT) * 100);
-        $("#fdBar").style.width = pct + "%";
-        $("#fdTxt").textContent =
-          hasCombo || after >= FD_LIMIT ? t.fdOk : t.fdMore(money(FD_LIMIT - after));
-        $("#sum").innerHTML =
-          `<div class="flex justify-between"><span class="mu">${t.sub}</span><b>${money(sub)}</b></div>` +
-          (dis
-            ? `<div class="flex justify-between acc"><span>${t.dis}</span><b>-${money(dis)}</b></div>`
-            : "") +
-          `<div class="flex justify-between"><span class="mu">${t.del}</span><b>${del ? money(del) : t.free}</b></div><div class="flex justify-between text-base font-bold border-t pt-2" style="border-color:var(--bd)"><span>${t.tot}</span><span class="pri">${money(tot)}</span></div>`;
-        $("#eta").textContent =
-          t.eta + ($("#zone").value === "50" ? t.eta1 : t.eta2);
-      }
+        const sub = cart.reduce((a, b) => a + b.price * b.qty, 0);
+        const dis = coupon ? Math.round(sub * 0.1) : 0;
+        const hasCombo = cart.some((c) => c.isCombo);
+        const free = hasCombo || sub - dis >= FD_LIMIT;
+        const del = free ? 0 : +$("#zone").value;
+        const tot = sub - dis + del;
 
-      window.qty = (i, d) => {
-        cart[i].qty += d;
-        if (cart[i].qty < 1) cart.splice(i, 1);
-        saveCart();
-      };
-
-      const renderPays = () => {
-        const t = T[lang];
+        $("#fdTxt").textContent = free ? t.fdOk : t.fdMore(money(FD_LIMIT - (sub - dis)));
+        $("#fdBar").style.width = (free ? 100 : Math.min(100, ((sub - dis) / FD_LIMIT) * 100)) + "%";
+        $("#eta").textContent = t.eta + (+$("#zone").value === 50 ? t.eta1 : t.eta2);
         $("#pays").innerHTML = [
           ["cod", t.cod],
           ["bk", t.bk],
@@ -3762,58 +4168,199 @@
         ]
           .map(
             (x) =>
-              `<button type="button" onclick="setPay('${x[0]}')" class="pill ${pay === x[0] ? "on" : ""}">${x[1]}</button>`,
+              `<button type="button" onclick="setPay('${x[0]}')" class="pill text-center ${pay === x[0] ? "on" : ""}">${x[1]}</button>`,
           )
           .join("");
         $("#payBox").classList.toggle("hidden", pay === "cod");
+        $("#sum").innerHTML = `
+          <div class="flex justify-between"><span>${t.sub}</span><b>${money(sub)}</b></div>
+          ${dis ? `<div class="flex justify-between text-green-600"><span>${t.dis} (10%)</span><b>−${money(dis)}</b></div>` : ""}
+          <div class="flex justify-between"><span>${t.del}</span><b>${del ? money(del) : t.free}</b></div>
+          <div class="flex justify-between text-base font-bold pt-2 border-t pri" style="border-color:var(--bd)"><span>${t.tot}</span><span>${money(tot)}</span></div>`;
+      }
+
+      window.chg = (i, d) => {
+        cart[i].qty += d;
+        if (cart[i].qty < 1) cart.splice(i, 1);
+        saveCart();
+      };
+      window.delC = (i) => {
+        cart.splice(i, 1);
+        saveCart();
       };
       window.setPay = (p) => {
         pay = p;
-        renderPays();
+        renderCart();
       };
 
-      function render() {
+      function openCart() {
+        $("#ov").classList.remove("hidden");
+        $("#drawer").classList.remove("translate-x-full");
+      }
+      function closeCart() {
+        $("#ov").classList.add("hidden");
+        $("#drawer").classList.add("translate-x-full");
+      }
+      $("#cartBtn").onclick = $("#floatCart").onclick = openCart;
+      $("#closeCart").onclick = $("#ov").onclick = closeCart;
+      $("#zone").onchange = renderCart;
+      $("#gift").onchange = (e) => $("#giftBox").classList.toggle("hidden", !e.target.checked);
+      $("#applyCp").onclick = () => {
+        const ok = $("#coupon").value.trim().toUpperCase() === "KHATI10";
+        coupon = ok;
+        $("#cpMsg").textContent = ok ? T[lang].cpOk : T[lang].cpBad;
+        $("#cpMsg").style.color = ok ? "#16a34a" : "#dc2626";
+        renderCart();
+      };
+
+      const validPhone = (s) => /^(\+?88)?01[3-9]\d{8,9}$/.test(s.replace(/[\s-]/g, ""));
+      $("#cbBtn").onclick = () => {
+        const ok = validPhone($("#cbPh").value);
+        $("#cbMsg").textContent = ok ? T[lang].cbOk : T[lang].cbBad;
+        $("#cbMsg").style.color = ok ? "#16a34a" : "#dc2626";
+        if (ok) $("#cbPh").value = "";
+      };
+
+      $("#confirm").onclick = () => {
+        const t = T[lang],
+          name = $("#fName").value.trim(),
+          ph = $("#fPhone").value.trim(),
+          ad = $("#fAddr").value.trim();
+        if (!name) return toast(t.eName);
+        if (!validPhone(ph)) return toast(t.ePhone);
+        if (!ad) return toast(t.eAddr);
+        if (pay !== "cod" && !$("#trx").value.trim()) return toast(t.eTrx);
+
+        const id = "KG-" + (1000 + Math.floor(Math.random() * 9000));
+        const sub = cart.reduce((a, b) => a + b.price * b.qty, 0);
+        const dis = coupon ? Math.round(sub * 0.1) : 0;
+        const hasCombo = cart.some((c) => c.isCombo);
+        const del = hasCombo || sub - dis >= FD_LIMIT ? 0 : +$("#zone").value;
+        const tot = sub - dis + del;
+
+        const g = $("#gift").checked,
+          hp = g && $("#hidePrice").checked,
+          gm = g ? $("#gMsg").value.trim() : "";
+
+        const itemsSummary = cart
+          .map((c) => {
+            if (c.isCombo) return `${t.comboName} × ${c.qty}`;
+            const pObj = PRODUCTS_DATA.find((x) => x.id === c.id);
+            const sz = pObj ? pObj.sizes[c.sizeIdx || 0] : null;
+            return `${pObj ? pObj[lang].n : c.id} (${sz ? (lang === "bn" ? sz.l_bn : sz.l_en) : ""}) × ${c.qty}`;
+          })
+          .join(", ");
+
+        const ord = JSON.parse(localStorage.getItem("kg_orders") || "{}");
+        ord[id] = {
+          id,
+          date: new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+          area: +$("#zone").value === 50 ? 0 : 1,
+          step: 0,
+          customer: name,
+          phone: ph,
+          items: itemsSummary,
+          userId: currentUser && currentUser.role === "user" ? currentUser.id : null,
+        };
+        localStorage.setItem("kg_orders", JSON.stringify(ord));
+
+        closeCart();
+        $("#omBody").innerHTML = `
+          <h3 class="text-2xl font-bold pri">${t.oT}</h3>
+          <p class="mt-2">${t.oId}: <b class="acc">${id}</b></p>
+          <p class="text-sm mu mt-1">${name} • ${ph}</p>
+          <p class="text-sm mu">${ad}</p>
+          ${g ? `<p class="text-xs acc font-medium mt-1">🎁 ${t.giftYes}${gm ? ` — “${gm}”` : ""}</p>` : ""}
+          ${hp ? "" : `<p class="text-lg font-bold mt-3 pri">${t.tot}: ${money(tot)}</p>`}
+          <p class="text-xs mu mt-2">${t.oSub}</p>
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <button onclick="$('#om').classList.remove('open'); openTrackWithId('${id}')" class="btn2 w-full text-xs sm:text-sm">📦 ${t.trk}</button>
+            <button onclick="$('#om').classList.remove('open')" class="btn w-full text-xs sm:text-sm">${t.close}</button>
+          </div>`;
+        $("#om").classList.add("open");
+        cart = [];
+        coupon = false;
+        saveCart();
+      };
+
+      function openTrack() {
         const t = T[lang];
-        document.documentElement.lang = lang;
-        $$("[data-i18n]").forEach((el) => {
-          const v = t[el.dataset.i18n];
-          if (typeof v === "string") el.textContent = v;
-        });
-        $$("[data-ph]").forEach((el) => (el.placeholder = t[el.dataset.ph]));
-        $$("#langBtn span").forEach((s) =>
-          s.classList.toggle("on", s.dataset.l === lang),
-        );
+        $("#tmBody").innerHTML = `
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold pri">${t.trT}</h3>
+            <button onclick="$('#tm').classList.remove('open')" class="pill !px-3">✕</button>
+          </div>
+          <div class="flex gap-2 mt-4">
+            <input id="trIn" class="inp uppercase" placeholder="KG-1042"/>
+            <button id="trGo" class="btn whitespace-nowrap">${t.trBtn}</button>
+          </div>
+          <p class="text-xs mu mt-2">${t.trDemo}
+            <button type="button" class="underline acc font-semibold" onclick="$('#trIn').value='KG-1042';$('#trGo').click()">KG-1042</button>,
+            <button type="button" class="underline acc font-semibold" onclick="$('#trIn').value='KG-1089';$('#trGo').click()">KG-1089</button>
+          </p>
+          <div id="trOut" class="mt-4"></div>
+          <div class="mt-4 pt-3 border-t text-xs mu flex items-center justify-between" style="border-color:var(--bd)">
+            <span>📞 ${t.trHelp}</span>
+            <a href="tel:011111111111" class="acc font-bold underline">${t.call}</a>
+          </div>`;
+        $("#tm").classList.add("open");
+        $("#trGo").onclick = () => {
+          const id = $("#trIn").value.trim().toUpperCase();
+          if (id) renderTrackResult(id);
+        };
+      }
 
-        updateThemeUI();
-        updateTrustBadges();
-        updateLoginNavLabel();
-
-        if ($("#hubCards")) {
-          $("#hubCards").innerHTML = t.hubCards
-            .map(
-              (c) => `<a href="#${c[0]}" data-page="${c[0]}" class="card rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-1 transition-transform">
-                <div class="text-3xl shrink-0">${c[1]}</div>
-                <div>
-                  <b class="text-base pri block">${c[2]}</b>
-                  <p class="text-xs mu mt-1 leading-relaxed">${c[3]}</p>
-                </div>
-              </a>`,
-            )
-            .join("");
+      function renderTrackResult(id) {
+        const t = T[lang];
+        const o = getAllOrders()[id];
+        if (!o) {
+          $("#trOut").innerHTML = `<p class="text-sm text-red-600">${t.trBad}</p>`;
+          return;
         }
+        const curStep = Math.min(3, Math.max(0, Number(o.step) || 0));
+        $("#trOut").innerHTML = `
+          <div class="card rounded-xl p-4 space-y-3 text-sm fade">
+            <div class="rounded-lg p-2.5 text-xs font-semibold bg-emerald-600/15 text-emerald-700 dark:text-emerald-300">
+              ${t.trConfirmedBanner}
+            </div>
+            <div class="flex justify-between items-center">
+              <span>${t.oId}: <b class="acc font-mono">${id}</b></span>
+              <span class="mu text-xs">${t.trDate}: ${o.date}</span>
+            </div>
+            <p class="text-xs mu">${t.trAreaL}: <b>${t.trArea[o.area || 0]}</b></p>
+            ${o.items ? `<p class="text-xs mu bg-black/5 dark:bg-white/5 p-2 rounded-lg">${o.items}</p>` : ""}
+            <ol class="space-y-2.5 pt-1">${t.trSteps
+              .map(
+                (s, i) =>
+                  `<li class="flex items-center gap-2.5 ${i <= curStep ? "pri font-semibold" : "mu opacity-55"}">
+                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${i <= curStep ? "text-white" : "border"}" style="${i <= curStep ? "background:var(--pri)" : "border-color:var(--bd)"}">${i <= curStep ? "✓" : num(i + 1)}</span>
+                    <span>${s}</span>
+                    ${i === curStep ? `<span class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 acc font-bold">${lang === "bn" ? "বর্তমান" : "Current"}</span>` : ""}
+                  </li>`,
+              )
+              .join("")}</ol>
+            <div class="pt-2 border-t flex items-center justify-between text-[11px] mu" style="border-color:var(--bd)">
+              <span>${t.trAdminNote}</span>
+              <button type="button" onclick="renderTrackResult('${id}')" class="acc font-semibold underline">${t.trRefresh}</button>
+            </div>
+          </div>`;
+      }
 
-        $("#pillars").innerHTML = t.pil
-          .map(
-            (p) =>
-              `<div class="card rounded-2xl p-5"><div class="text-3xl">${p[0]}</div><b class="block mt-3 pri">${p[1]}</b><p class="text-sm mu mt-1">${p[2]}</p></div>`,
-          )
-          .join("");
-        $("#sources").innerHTML = t.srcs
-          .map(
-            (s) =>
-              `<div class="card rounded-2xl p-5 text-center"><div class="text-3xl">${s[0]}</div><b class="block mt-2 pri">${s[1]}</b><p class="text-xs mu mt-1">${s[2]}</p></div>`,
-          )
-          .join("");
+      $$("[data-track]").forEach(
+        (b) =>
+          (b.onclick = (e) => {
+            e.preventDefault();
+            closeMenu();
+            openTrack();
+          }),
+      );
+
+      function renderTabs() {
+        const t = T[lang];
         $("#tabs").innerHTML = t.tabs
           .map(
             (x, i) =>
@@ -3821,212 +4368,125 @@
           )
           .join("");
         $("#tabBody").innerHTML =
-          `<ul class="space-y-3">${t.tabs[tab][1].map((s) => `<li class="flex gap-2.5"><span class="acc font-bold">✓</span><span>${s}</span></li>`).join("")}</ul>` +
-          `<div class="mt-5 pt-4 border-t text-xs font-semibold pri flex items-center gap-2" style="border-color:var(--bd)"><span>🛡️</span><span>${t.cert}</span></div>`;
-        $("#cmp").innerHTML = t.cmp
-          .map(
-            (r) =>
-              `<tr class="border-t" style="border-color:var(--bd)"><td class="p-4 font-semibold">${r[0]}</td><td class="p-4 pri">✓ ${r[1]}</td><td class="p-4 mu">✕ ${r[2]}</td></tr>`,
-          )
-          .join("");
+          `<div class="fade"><p class="text-xs acc font-semibold mb-3">🏅 ${t.cert}</p><ul class="space-y-2.5 text-sm leading-relaxed">${t.tabs[tab][1].map((s) => `<li>✔ ${s}</li>`).join("")}</ul></div>`;
+      }
+      window.setTab = (i) => {
+        tab = i;
+        renderTabs();
+      };
+
+      function render() {
+        const t = T[lang];
+        document.documentElement.lang = lang;
+        $$("#langBtn span").forEach((s) => s.classList.toggle("on", s.dataset.l === lang));
+        $$("[data-i18n]").forEach((el) => {
+          const v = t[el.dataset.i18n];
+          if (typeof v === "string") el.textContent = v;
+        });
+        $$("[data-ph]").forEach((el) => (el.placeholder = t[el.dataset.ph]));
+
+        updateThemeUI();
+        updateTrustBadges();
+        updateLoginNavLabel();
 
         renderHomeCats();
         renderComboSection();
         renderVideoSection();
         renderCategoryBar();
-        renderProducts();
+        renderProducts(false);
+
+        const hubGrid = $("#hubCards");
+        hubGrid.innerHTML = t.hubCards
+          .map(
+            (h, idx) =>
+              `<a href="#${h[0]}" data-page="${h[0]}" style="--stagger:${idx * 70}ms" class="card rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-1.5 reveal">
+                <div class="text-3xl shrink-0">${h[1]}</div>
+                <div>
+                  <h3 class="font-bold text-lg pri">${h[2]} →</h3>
+                  <p class="mu text-xs sm:text-sm mt-1">${h[3]}</p>
+                </div>
+              </a>`,
+          )
+          .join("");
+        observeReveals(hubGrid);
+
+        const pilGrid = $("#pillars");
+        pilGrid.innerHTML = t.pil
+          .map(
+            (p, idx) =>
+              `<div style="--stagger:${idx * 80}ms" class="card rounded-2xl p-5 hover:-translate-y-1.5 reveal"><div class="text-3xl">${p[0]}</div><h3 class="font-bold mt-2 pri">${p[1]}</h3><p class="mu text-sm mt-1">${p[2]}</p></div>`,
+          )
+          .join("");
+        observeReveals(pilGrid);
+
+        const srcGrid = $("#sources");
+        srcGrid.innerHTML = t.srcs
+          .map(
+            (s, idx) =>
+              `<div style="--stagger:${idx * 80}ms" class="card rounded-2xl p-5 text-center hover:-translate-y-1.5 reveal"><div class="text-4xl">${s[0]}</div><h3 class="font-bold mt-2 pri">${s[1]}</h3><p class="mu text-xs mt-1">${s[2]}</p></div>`,
+          )
+          .join("");
+        observeReveals(srcGrid);
+
         renderCertificates();
+        renderTabs();
+
+        $("#cmp").innerHTML = t.cmp
+          .map(
+            (r, idx) =>
+              `<tr style="--stagger:${idx * 45}ms" class="border-t row-stagger" style="border-color:var(--bd)"><td class="p-4 font-semibold">${r[0]}</td><td class="p-4 pri font-medium">✓ ${r[1]}</td><td class="p-4 mu">✕ ${r[2]}</td></tr>`,
+          )
+          .join("");
+
         renderReviewSection();
         renderFaqs();
-        renderPays();
-        renderCart();
         if (currentPage === "login") renderAuthPage();
+        saveCart();
       }
-      window.setTab = (i) => {
-        tab = i;
-        render();
-      };
 
       $("#prodSearch").oninput = (e) => {
         searchQuery = e.target.value;
         renderProducts();
       };
 
-      $("#langBtn").onclick = () => {
-        lang = lang === "bn" ? "en" : "bn";
+      const closeMenu = () => {
+        $("#mdrawer").classList.remove("open");
+        $("#mov").classList.remove("open");
+        document.body.style.overflow = "";
+      };
+      $("#menuBtn").onclick = () => {
+        $("#mdrawer").classList.add("open");
+        $("#mov").classList.add("open");
+        document.body.style.overflow = "hidden";
+      };
+      $("#mClose").onclick = $("#mov").onclick = closeMenu;
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMenu();
+          closeCart();
+          closeQV();
+          closeCertModal();
+          $("#om").classList.remove("open");
+          $("#tm").classList.remove("open");
+        }
+      });
+
+      $("#langBtn").onclick = (e) => {
+        lang = e.target.dataset.l || (lang === "bn" ? "en" : "bn");
         localStorage.setItem("kg_lang", lang);
         render();
       };
       $("#themeBtn").onclick = toggleTheme;
-      const openCart = () => {
-        $("#ov").classList.remove("hidden");
-        $("#drawer").classList.remove("translate-x-full");
-      };
-      const closeCart = () => {
-        $("#ov").classList.add("hidden");
-        $("#drawer").classList.add("translate-x-full");
-      };
-      $("#cartBtn").onclick = $("#floatCart").onclick = openCart;
-      $("#closeCart").onclick = $("#ov").onclick = closeCart;
-      const openMenu = () => {
-        $("#mdrawer").classList.add("open");
-        $("#mov").classList.add("open");
-      };
-      const closeMenu = () => {
-        $("#mdrawer").classList.remove("open");
-        $("#mov").classList.remove("open");
-      };
-      $("#menuBtn").onclick = openMenu;
-      $("#mClose").onclick = $("#mov").onclick = closeMenu;
-      $("#zone").onchange = renderCart;
-      $("#gift").onchange = (e) =>
-        $("#giftBox").classList.toggle("hidden", !e.target.checked);
-
-      $("#applyCp").onclick = () => {
-        const ok = $("#coupon").value.trim().toUpperCase() === "KHATI10";
-        coupon = ok;
-        $("#cpMsg").textContent = ok ? T[lang].cpOk : T[lang].cpBad;
-        $("#cpMsg").style.color = ok ? "var(--pri)" : "#dc2626";
-        renderCart();
-      };
-
-      const validPhone = (v) =>
-        /^(\+?88)?01[0-9]{9}$/.test(
-          v.replace(/[\s-]/g, "").replace(/[০-৯]/g, (d) => "০১২৩৪৫৬৭৮৯".indexOf(d)),
-        );
-
-      $("#cbBtn").onclick = () => {
-        const ok = validPhone($("#cbPh").value);
-        $("#cbMsg").textContent = ok ? T[lang].cbOk : T[lang].cbBad;
-        $("#cbMsg").style.color = ok ? "var(--pri)" : "#dc2626";
-        if (ok) $("#cbPh").value = "";
-      };
-
-      window.openTrack = (prefill = "", isJustConfirmed = false) => {
-        const t = T[lang];
-        $("#tmBody").innerHTML = `<div class="flex justify-between items-center">
-            <h3 class="text-xl font-bold pri">${t.trT}</h3>
-            <button onclick="closeTrack()" class="pill">✕</button>
-          </div>
-          ${
-            isJustConfirmed
-              ? `<div class="mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600/15 text-emerald-800 dark:text-emerald-200 border border-emerald-600/30">
-                  ${t.trConfirmedBanner}
-                </div>`
-              : ""
-          }
-          <div class="flex gap-2 mt-4">
-            <input id="trIn" class="inp uppercase" placeholder="KG-1042" value="${prefill}">
-            <button onclick="doTrack()" class="btn">${t.trBtn}</button>
-          </div>
-          <p class="text-xs mu mt-2">${t.trDemo} <b>KG-1042</b>, <b>KG-1089</b></p>
-          <p class="text-xs acc font-semibold mt-1">📞 ${t.trHelp}</p>
-          <div id="trOut" class="mt-4"></div>`;
-        $("#tm").classList.add("open");
-        if (prefill) doTrack();
-      };
-      window.closeTrack = () => $("#tm").classList.remove("open");
-
-      window.doTrack = () => {
-        const t = T[lang],
-          id = $("#trIn").value.trim().toUpperCase();
-        const o = getAllOrders()[id];
-        if (!o) {
-          $("#trOut").innerHTML = `<p class="text-sm" style="color:#dc2626">${t.trBad}</p>`;
-          return;
-        }
-        const currentStep = Number(o.step) || 0;
-        $("#trOut").innerHTML = `<div class="card rounded-xl p-4 space-y-3 text-sm">
-          <div class="flex justify-between items-center">
-            <div><span class="mu text-xs block">${t.trDate}</span><b>${o.date}</b></div>
-            <div class="text-right"><span class="mu text-xs block">${t.trAreaL}</span><b>${t.trArea[o.area]}</b></div>
-          </div>
-          ${o.items ? `<p class="text-xs mu border-t pt-2" style="border-color:var(--bd)">${o.items}</p>` : ""}
-          <ol class="space-y-2.5 pt-2 border-t" style="border-color:var(--bd)">
-            ${t.trSteps
-              .map(
-                (s, i) =>
-                  `<li class="flex items-center justify-between gap-2 ${i <= currentStep ? "pri font-semibold" : "mu"}">
-                    <div class="flex items-center gap-2.5">
-                      <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${i <= currentStep ? "text-white" : "border"}" style="${i <= currentStep ? "background:var(--pri)" : "border-color:var(--bd)"}">${i <= currentStep ? "✓" : num(i + 1)}</span>
-                      <span>${s}</span>
-                    </div>
-                    ${i === currentStep ? `<span class="text-[11px] px-2 py-0.5 rounded-full acc font-bold" style="background:color-mix(in srgb, var(--acc) 15%, transparent)">● Current</span>` : ""}
-                  </li>`,
-              )
-              .join("")}
-          </ol>
-          <div class="pt-2 border-t flex items-center justify-between gap-2 text-[11px] mu" style="border-color:var(--bd)">
-            <span>${t.trAdminNote}</span>
-            <button type="button" onclick="doTrack()" class="acc font-bold hover:underline shrink-0">${t.trRefresh}</button>
-          </div>
-        </div>`;
-      };
-      $$("[data-track]").forEach((a) =>
-        a.addEventListener("click", (e) => {
-          e.preventDefault();
-          closeMenu();
-          openTrack();
-        }),
+      $$(".modal").forEach(
+        (m) =>
+          (m.onclick = (e) => {
+            if (e.target === m) m.classList.remove("open");
+          }),
       );
 
-      $("#confirm").onclick = () => {
-        const t = T[lang],
-          name = $("#fName").value.trim(),
-          phone = $("#fPhone").value.trim(),
-          addr = $("#fAddr").value.trim();
-        let err = !name
-          ? t.eName
-          : !validPhone(phone)
-            ? t.ePhone
-            : !addr
-              ? t.eAddr
-              : pay !== "cod" && !$("#trx").value.trim()
-                ? t.eTrx
-                : "";
-        if (err) {
-          toast(err);
-          return;
-        }
-        const id = "KG-" + Math.floor(1000 + Math.random() * 9000);
-        const today = new Date().toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-        const itemsSummary = cart
-          .map((c) => {
-            if (c.isCombo) return `${t.comboName} × ${c.qty}`;
-            const p = PRODUCTS_DATA.find((x) => x.id === c.id);
-            const sz = p ? p.sizes[c.sizeIdx] : null;
-            return `${p ? p[lang].n : c.id} (${sz ? (lang === "bn" ? sz.l_bn : sz.l_en) : ""}) × ${c.qty}`;
-          })
-          .join(", ");
-
-        const o = JSON.parse(localStorage.getItem("kg_orders") || "{}");
-        o[id] = {
-          id,
-          date: today,
-          area: $("#zone").value === "50" ? 0 : 1,
-          step: 0,
-          customer: name,
-          phone,
-          items: itemsSummary,
-          userId: currentUser && currentUser.role === "user" ? currentUser.id : null,
-        };
-        localStorage.setItem("kg_orders", JSON.stringify(o));
-
-        cart = [];
-        coupon = false;
-        saveCart();
-        closeCart();
-        toast(t.oT);
-        openTrack(id, true);
-      };
-
-      const initialHash = location.hash.replace("#", "");
       render();
-      saveCart();
+      observeReveals(document);
+      const initialHash = location.hash.replace("#", "");
       goPage(VALID_PAGES.includes(initialHash) ? initialHash : "home", false);
     </script>
   </body>
